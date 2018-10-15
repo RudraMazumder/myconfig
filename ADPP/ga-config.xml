@@ -1,0 +1,99 @@
+<!--
+
+    Copyright (c) Wolters Kluwer, All Rights Reserved.
+
+    This application source code (Software) is the confidential and proprietary
+    information of Wolters Kluwer, containing trade secrets and protected by
+    copyright law ("Confidential Information").  You may not disclose, copy,
+    modify, upload, download, transmit, republish, compile, or otherwise distribute
+    or reuse such Confidential Information in whole or in part without express
+    written permission from Wolters Kluwer.  This Software is provided for the
+    purpose of technical analysis within the scope of a single project; when that
+    project is complete, you must destroy all copies of this Software.
+
+-->
+<!--
+This xml contains configuration framework settings. The settings divide  into following group:
+dimensions - describe dimensions and their values. 
+overriding - properties that override default values
+modules - default properties
+
+overriding and modules consists of "properties" which specify a separate property file (or other resource)
+Properties have following parameters:
+name - properties file/resource name
+prefix - if specified then prefix value will be inserted to property keys
+dimension - if specified then properties will be configured for given dimension values only
+optional - no exception will be thrown if specified resource (path) is missed
+-->
+<config>
+	<!--
+	Dimensions are used to specify different property values for different execution runtime context
+	For example, use the following syntax to make some properties CFU-dependent :
+	property.@CFU[TAL|WK]= TAL_or_WK_value
+	property.@CFU[BC]=BC_value
+	property = default 
+	
+	Each dimension has a list of values and dimension value resolver which determines proper dimension value in request time.
+	
+	Properties can have dimensions specified explicitly (as prefix or suffix) or implicitly by dimension 
+	attribute of "properties" tag. 
+	
+	Note: there should not be the same dimension values among all dimensions!
+	Example:
+	CFU.dimension.list=TAL,WK,BC,FS,TAA,Legal,DEFAULT
+	
+	The mentioned property 'CFU.dimension.list' should be defined in the reffered property file, e.g.
+	<property name="file">cfu_dimension.properties</property>
+	-->
+	
+	<dimensions>
+        <!--   Business Context dimension definition 	 -->
+		<dimension name="BUSINESS_CONTEXT" provider="com.example.demo.configuration.BusinessContextDimensionProvider"/>
+		
+		<!-- Product dimension values will be  -->	
+		<!-->dimension name="PRODUCT" provider="com.wolterskluwer.alert.common.configuration.CarbonProductDimensionProvider" /-->
+	</dimensions>
+	<!-- 
+	The overriding provides a way to override default/module properties in an external file.
+	For example, product-specific overriding.
+	Overriding order has matter! Only first occurrence of a property will be used.
+	-->
+	<overriding>
+		<!--  user overriding  -->
+<!-- 		<properties name="java-system" loader="com.wolterskluwer.configuration.provider.SystemPropertiesProvider" />
+		<properties name="java-env" loader="com.wolterskluwer.configuration.provider.EnvPropertiesProvider" />
+		<properties name="udr_default.properties"  optional="true" />
+		<properties name="override.properties" optional="true"/>
+		<properties name="environment.properties" optional="true"/>		
+		
+		<properties name="als_config"
+		            loader="com.wolterskluwer.alert.configuration.provider.DbPropertiesProvider"
+		            optional="true"
+		            deferred="true">
+		</properties>  -->
+		<properties name="configpoc.properties" optional="true"/>
+	</overriding>
+
+	<!-- External providers are used if a requested property is not found. Provider class should
+	implement interface ExternalConfiguration.  -->
+	<!-- <external-config>
+		<provider prefix="userprefs" class="com.wolterskluwer.atlas.configuration.preferences.UserPreferencesProvider" />
+		<provider prefix="session" class="com.wolterskluwer.atlas.configuration.preferences.UserSessionProvider" />
+	</external-config> -->
+
+	<!-- 
+	Add module/functional - specific properties here.
+	
+	Explicit references are used to do load-time verification of properties availability.
+	-->
+	<modules>
+		<!-- <properties name="application.properties" prefix=""/>
+		<properties name="configpoc.properties" /> -->
+		<!-- <properties name="messaging_config.properties" />
+		<properties name="logging_config.properties" />
+		<properties name="executor_config.properties" />
+		<properties name="util_config.properties" />
+		<properties name="resultdelivery_config.properties" />
+		<properties name="cluster_config.properties" /> -->
+	</modules>	
+</config>
